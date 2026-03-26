@@ -1,0 +1,2904 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fleet Platform — Apps & Functions</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+            rel="stylesheet" />
+        <style>
+            :root {
+                --bg: #0d1117;
+                --surface: #161c2a;
+                --surface2: #1e2637;
+                --border: rgba(255, 255, 255, 0.07);
+                --border2: rgba(255, 255, 255, 0.13);
+                --text: #e2e8f0;
+                --muted: #7a8499;
+                --subtle: #3a4155;
+
+                --amber: #f59e0b;
+                --amber-dim: rgba(245, 158, 11, 0.12);
+                --gray-c: #9ca3af;
+                --gray-dim: rgba(156, 163, 175, 0.12);
+                --teal: #10b981;
+                --teal-dim: rgba(16, 185, 129, 0.12);
+                --coral: #f97316;
+                --coral-dim: rgba(249, 115, 22, 0.12);
+                --purple: #818cf8;
+                --purple-dim: rgba(129, 140, 248, 0.12);
+                --green: #22c55e;
+
+                --mono: "DM Mono", monospace;
+                --sans: "DM Sans", sans-serif;
+                --radius: 10px;
+                --radius-sm: 6px;
+            }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: var(--sans);
+                background: var(--bg);
+                color: var(--text);
+                min-height: 100vh;
+                font-size: 18px;
+                line-height: 1.6;
+            }
+
+            /* ─── SCROLLBAR ─── */
+            ::-webkit-scrollbar {
+                width: 4px;
+                height: 4px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--subtle);
+                border-radius: 2px;
+            }
+
+            /* ─── WRAP ─── */
+            .wrap {
+                max-width: 820px;
+                margin: 0 auto;
+                padding: 24px 16px 48px;
+            }
+
+            /* ─── HEADER ─── */
+            .page-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 28px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+            .page-logo {
+                width: 36px;
+                height: 36px;
+                background: var(--purple-dim);
+                border: 1px solid rgba(129, 140, 248, 0.25);
+                border-radius: var(--radius-sm);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+            .page-title {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text);
+            }
+            .page-sub {
+                font-size: 11px;
+                color: var(--muted);
+                font-family: var(--mono);
+                margin-top: 1px;
+            }
+            .page-credit {
+                margin-top: 6px;
+                font-size: 10px;
+                color: var(--muted);
+                font-family: var(--mono);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .page-credit a {
+                color: var(--teal);
+                text-decoration: none;
+                border-bottom: 1px dashed rgba(16, 185, 129, 0.35);
+                transition:
+                    color 0.15s ease,
+                    border-color 0.15s ease;
+            }
+            .page-credit a:hover {
+                color: #34d399;
+                border-color: rgba(52, 211, 153, 0.6);
+            }
+            .page-badge {
+                margin-right: auto;
+                font-size: 10px;
+                font-family: var(--mono);
+                padding: 3px 8px;
+                background: var(--teal-dim);
+                color: var(--teal);
+                border: 1px solid rgba(16, 185, 129, 0.2);
+                border-radius: 20px;
+            }
+
+            /* ─── TABS ─── */
+            .tabs {
+                display: flex;
+                gap: 4px;
+                flex-wrap: wrap;
+                margin-bottom: 20px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 6px;
+            }
+            .tab {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                padding: 7px 14px;
+                font-size: 12px;
+                font-weight: 500;
+                font-family: var(--sans);
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                color: var(--muted);
+                background: transparent;
+                border: none;
+                transition: all 0.18s ease;
+                white-space: nowrap;
+                letter-spacing: 0.01em;
+            }
+            .tab:hover {
+                color: var(--text);
+                background: var(--surface2);
+            }
+            .tab.active {
+                color: var(--text);
+                background: var(--surface2);
+            }
+            .tab-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: currentColor;
+                opacity: 0.5;
+                transition: opacity 0.18s;
+                flex-shrink: 0;
+            }
+            .tab.active .tab-dot {
+                opacity: 1;
+            }
+            .tab[data-id="overview"] .tab-dot {
+                color: var(--purple);
+            }
+            .tab[data-id="driver"] .tab-dot {
+                color: var(--amber);
+            }
+            .tab[data-id="customer"] .tab-dot {
+                color: var(--gray-c);
+            }
+            .tab[data-id="dashboard"] .tab-dot {
+                color: var(--teal);
+            }
+            .tab[data-id="maintenance"] .tab-dot {
+                color: var(--coral);
+            }
+            .tab[data-id="overview"] {
+                --tab-accent: var(--purple);
+            }
+            .tab[data-id="driver"] {
+                --tab-accent: var(--amber);
+            }
+            .tab[data-id="customer"] {
+                --tab-accent: var(--gray-c);
+            }
+            .tab[data-id="dashboard"] {
+                --tab-accent: var(--teal);
+            }
+            .tab[data-id="maintenance"] {
+                --tab-accent: var(--coral);
+            }
+            .tab.active {
+                color: var(--tab-accent);
+            }
+
+            /* ─── PANELS ─── */
+            .panel {
+                display: none;
+                animation: fadeIn 0.2s ease;
+            }
+            .panel.active {
+                display: block;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(4px);
+                }
+                to {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+
+            /* ─── OVERVIEW GRID ─── */
+            .overview-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .ov-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 18px;
+                cursor: pointer;
+                transition: all 0.18s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .ov-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 3px;
+                height: 100%;
+                background: var(--card-accent, var(--purple));
+                border-radius: 0 var(--radius) var(--radius) 0;
+                opacity: 0;
+                transition: opacity 0.18s;
+            }
+            .ov-card:hover {
+                border-color: var(--border2);
+                transform: translateY(-1px);
+            }
+            .ov-card:hover::before {
+                opacity: 1;
+            }
+            .ov-icon {
+                font-size: 26px;
+                margin-bottom: 10px;
+                display: block;
+            }
+            .ov-name {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text);
+            }
+            .ov-who {
+                font-size: 11px;
+                color: var(--muted);
+                margin-top: 3px;
+            }
+            .ov-count {
+                margin-top: 12px;
+                font-size: 11px;
+                font-family: var(--mono);
+                color: var(--green);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .ov-count::before {
+                content: "";
+                display: inline-block;
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--green);
+            }
+
+            .ov-hint {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 12px 16px;
+                font-size: 12px;
+                color: var(--muted);
+                text-align: center;
+            }
+
+            /* ─── APP HEADER ─── */
+            .app-header {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 16px 20px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                margin-bottom: 20px;
+                border-right: 3px solid var(--panel-accent, var(--purple));
+            }
+            .ah-icon {
+                font-size: 30px;
+                line-height: 1;
+                flex-shrink: 0;
+            }
+            .ah-name {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text);
+            }
+            .ah-roles {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-wrap: wrap;
+                margin-top: 5px;
+            }
+            .role-chip {
+                font-size: 10px;
+                font-weight: 500;
+                padding: 2px 8px;
+                border-radius: 20px;
+                border: 1px solid;
+                font-family: var(--mono);
+            }
+
+            /* ─── SECTION LABEL ─── */
+            .section-label {
+                font-size: 10px;
+                font-weight: 600;
+                font-family: var(--mono);
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 10px;
+            }
+
+            /* ─── FLOW ROW ─── */
+            .flow-section {
+                margin-bottom: 24px;
+            }
+            .flow-scroll {
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+            .flow-row {
+                display: flex;
+                align-items: center;
+                gap: 0;
+                min-width: max-content;
+                padding: 4px 2px;
+            }
+            .flow-node {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 108px;
+                min-height: 68px;
+                padding: 10px 8px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                cursor: pointer;
+                text-align: center;
+                transition: all 0.15s ease;
+                position: relative;
+            }
+            .flow-node:hover {
+                border-color: var(--node-accent, var(--purple));
+                background: var(--surface2);
+            }
+            .flow-node-num {
+                font-family: var(--mono);
+                font-size: 9px;
+                color: var(--node-accent, var(--purple));
+                margin-bottom: 4px;
+                opacity: 0.8;
+            }
+            .flow-node-title {
+                font-size: 11px;
+                font-weight: 500;
+                line-height: 1.3;
+                color: var(--text);
+            }
+            .flow-node-sub {
+                font-size: 10px;
+                color: var(--muted);
+                margin-top: 3px;
+                line-height: 1.3;
+            }
+
+            .flow-arrow {
+                display: flex;
+                align-items: center;
+                padding: 0 6px;
+                flex-shrink: 0;
+                color: var(--subtle);
+                transform: scaleX(-1); /* Flips horizontally */
+            }
+            .flow-arrow svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            /* ─── FUNCTION LIST ─── */
+            .fn-list {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .fn-item {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                overflow: hidden;
+                cursor: pointer;
+                transition: border-color 0.15s;
+            }
+            .fn-item:hover {
+                border-color: var(--border2);
+            }
+            .fn-item.open {
+                border-color: var(--item-accent, var(--purple));
+            }
+
+            .fn-head {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 11px 14px;
+                user-select: none;
+            }
+            .fn-num {
+                font-family: var(--mono);
+                font-size: 10px;
+                font-weight: 500;
+                min-width: 28px;
+                height: 22px;
+                padding: 0 6px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                background: var(--num-bg, var(--surface2));
+                color: var(--num-color, var(--muted));
+                border: 1px solid var(--border);
+            }
+            .fn-item.open .fn-num {
+                background: var(--num-bg-active, var(--purple-dim));
+                color: var(--num-color-active, var(--purple));
+                border-color: var(
+                    --num-border-active,
+                    rgba(129, 140, 248, 0.3)
+                );
+            }
+            .fn-title {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text);
+                flex: 1;
+            }
+            .fn-right {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .fn-new {
+                font-size: 9px;
+                font-family: var(--mono);
+                padding: 2px 6px;
+                border-radius: 10px;
+                background: rgba(16, 185, 129, 0.15);
+                color: var(--teal);
+                border: 1px solid rgba(16, 185, 129, 0.2);
+                white-space: nowrap;
+            }
+            .fn-chevron {
+                width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--muted);
+                transition: transform 0.2s ease;
+                flex-shrink: 0;
+            }
+            .fn-item.open .fn-chevron {
+                transform: rotate(90deg);
+            }
+            .fn-chevron svg {
+                width: 12px;
+                height: 12px;
+            }
+
+            .fn-body {
+                display: none;
+                padding: 0 14px 14px 52px;
+                border-top: 1px solid var(--border);
+            }
+            .fn-item.open .fn-body {
+                display: block;
+            }
+
+            .fn-what {
+                font-size: 12px;
+                color: var(--text);
+                margin-top: 12px;
+                line-height: 1.7;
+                opacity: 0.85;
+            }
+            .fn-who {
+                margin-top: 8px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 11px;
+                color: var(--muted);
+                font-family: var(--mono);
+            }
+            .fn-how {
+                margin-top: 8px;
+                font-size: 11px;
+                color: var(--muted);
+                line-height: 1.7;
+                padding: 8px 10px;
+                background: var(--surface2);
+                border-radius: var(--radius-sm);
+                border-right: 2px solid var(--item-accent, var(--purple));
+            }
+            .fn-how b {
+                color: var(--text);
+                font-weight: 500;
+            }
+
+            /* ─── PANEL ACCENT VARS ─── */
+            #panel-driver .app-header {
+                --panel-accent: var(--amber);
+            }
+            #panel-driver .flow-node {
+                --node-accent: var(--amber);
+            }
+            #panel-driver .fn-item {
+                --item-accent: var(--amber);
+            }
+            #panel-driver .fn-item.open .fn-num {
+                --num-bg-active: var(--amber-dim);
+                --num-color-active: var(--amber);
+                --num-border-active: rgba(245, 158, 11, 0.3);
+            }
+
+            #panel-customer .app-header {
+                --panel-accent: var(--gray-c);
+            }
+            #panel-customer .flow-node {
+                --node-accent: var(--gray-c);
+            }
+            #panel-customer .fn-item {
+                --item-accent: var(--gray-c);
+            }
+            #panel-customer .fn-item.open .fn-num {
+                --num-bg-active: var(--gray-dim);
+                --num-color-active: var(--gray-c);
+                --num-border-active: rgba(156, 163, 175, 0.3);
+            }
+
+            #panel-dashboard .app-header {
+                --panel-accent: var(--teal);
+            }
+            #panel-dashboard .flow-node {
+                --node-accent: var(--teal);
+            }
+            #panel-dashboard .fn-item {
+                --item-accent: var(--teal);
+            }
+            #panel-dashboard .fn-item.open .fn-num {
+                --num-bg-active: var(--teal-dim);
+                --num-color-active: var(--teal);
+                --num-border-active: rgba(16, 185, 129, 0.3);
+            }
+
+            #panel-maintenance .app-header {
+                --panel-accent: var(--coral);
+            }
+            #panel-maintenance .flow-node {
+                --node-accent: var(--coral);
+            }
+            #panel-maintenance .fn-item {
+                --item-accent: var(--coral);
+            }
+            #panel-maintenance .fn-item.open .fn-num {
+                --num-bg-active: var(--coral-dim);
+                --num-color-active: var(--coral);
+                --num-border-active: rgba(249, 115, 22, 0.3);
+            }
+
+            /* ─── ROLE CHIP COLORS ─── */
+            .chip-amber {
+                color: var(--amber);
+                border-color: rgba(245, 158, 11, 0.3);
+                background: var(--amber-dim);
+            }
+            .chip-teal {
+                color: var(--teal);
+                border-color: rgba(16, 185, 129, 0.3);
+                background: var(--teal-dim);
+            }
+            .chip-purple {
+                color: var(--purple);
+                border-color: rgba(129, 140, 248, 0.3);
+                background: var(--purple-dim);
+            }
+            .chip-coral {
+                color: var(--coral);
+                border-color: rgba(249, 115, 22, 0.3);
+                background: var(--coral-dim);
+            }
+            .chip-gray {
+                color: var(--gray-c);
+                border-color: rgba(156, 163, 175, 0.3);
+                background: var(--gray-dim);
+            }
+
+            /* ─── FLOW DIVIDER ─── */
+            .flow-divider {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 20px 0 14px;
+            }
+            .flow-divider-line {
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+            .flow-divider-label {
+                font-size: 9px;
+                font-family: var(--mono);
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- PAGE HEADER -->
+            <div class="page-header" dir="ltr">
+                <div class="page-logo">🚛</div>
+                <div>
+                    <div class="page-title">Fleet Tracking Platform</div>
+                    <div class="page-sub">apps flow & functions reference</div>
+                    <div class="page-credit">
+                        <span>Made by Youssef Mahmoud</span>
+                        <a
+                            href="https://github.com/Yous2ef"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >GitHub</a
+                        >
+                        <a
+                            href="https://www.linkedin.com/in/yous2ef1/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >LinkedIn</a
+                        >
+                    </div>
+                </div>
+                <div class="page-badge">42 functions · 5 apps</div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button
+                    class="tab active"
+                    data-id="overview"
+                    onclick="switchTab('overview')">
+                    <span class="tab-dot"></span> نظرة عامة
+                </button>
+                <button
+                    class="tab"
+                    data-id="driver"
+                    onclick="switchTab('driver')">
+                    <span class="tab-dot"></span> Driver App
+                </button>
+                <button
+                    class="tab"
+                    data-id="customer"
+                    onclick="switchTab('customer')">
+                    <span class="tab-dot"></span> Customer Portal
+                </button>
+                <button
+                    class="tab"
+                    data-id="dashboard"
+                    onclick="switchTab('dashboard')">
+                    <span class="tab-dot"></span> Main Dashboard
+                </button>
+                <button
+                    class="tab"
+                    data-id="maintenance"
+                    onclick="switchTab('maintenance')">
+                    <span class="tab-dot"></span> Maintenance
+                </button>
+            </div>
+
+            <!-- ══════════════ OVERVIEW ══════════════ -->
+            <div class="panel active" id="panel-overview">
+                <div class="overview-grid">
+                    <div
+                        class="ov-card"
+                        style="--card-accent: var(--amber)"
+                        onclick="switchTab('driver')">
+                        <span class="ov-icon">🚚</span>
+                        <div class="ov-name">Driver App</div>
+                        <div class="ov-who">السائق فقط — موبايل</div>
+                        <div class="ov-count">12 مطلوب + 2 جديد</div>
+                    </div>
+                    <div
+                        class="ov-card"
+                        style="--card-accent: var(--gray-c)"
+                        onclick="switchTab('customer')">
+                        <span class="ov-icon">📦</span>
+                        <div class="ov-name">Customer Portal</div>
+                        <div class="ov-who">العميل — بدون Login</div>
+                        <div class="ov-count">4 مطاليب + 1 جديد</div>
+                    </div>
+                    <div
+                        class="ov-card"
+                        style="--card-accent: var(--teal)"
+                        onclick="switchTab('dashboard')">
+                        <span class="ov-icon">🗂️</span>
+                        <div class="ov-name">Main Dashboard</div>
+                        <div class="ov-who">Fleet Manager + Dispatcher</div>
+                        <div class="ov-count">17 مطلوب + 3 جديد</div>
+                    </div>
+                    <div
+                        class="ov-card"
+                        style="--card-accent: var(--coral)"
+                        onclick="switchTab('maintenance')">
+                        <span class="ov-icon">🔧</span>
+                        <div class="ov-name">Maintenance App</div>
+                        <div class="ov-who">Fleet Manager + Mechanic</div>
+                        <div class="ov-count">10 مطاليب + 1 جديد</div>
+                    </div>
+                </div>
+                <div class="ov-hint">
+                    اضغط على أي تطبيق عشان تشوف الفلو الكامل بتاعه وتفاصيل كل
+                    مطلوب
+                </div>
+            </div>
+
+            <!-- ══════════════ DRIVER APP ══════════════ -->
+            <div class="panel" id="panel-driver">
+                <div class="app-header">
+                    <div class="ah-icon">🚚</div>
+                    <div>
+                        <div class="ah-name">Driver App</div>
+                        <div class="ah-roles">
+                            <span class="role-chip chip-amber">Driver</span>
+                            <span style="font-size: 11px; color: var(--muted)"
+                                >واجهة السائق — موبايل</span
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-section">
+                    <div class="section-label">فلو العملية</div>
+                    <div class="flow-scroll">
+                        <div class="flow-row">
+                            <div class="flow-node" onclick="openFn('d-login')">
+                                <div class="flow-node-num">N</div>
+                                <div class="flow-node-title">Login</div>
+                                <div class="flow-node-sub">دخول السائق</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-12')">
+                                <div class="flow-node-num">12</div>
+                                <div class="flow-node-title">
+                                    Pre-Trip Check
+                                </div>
+                                <div class="flow-node-sub">تفتيش السيارة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-route')">
+                                <div class="flow-node-num">N</div>
+                                <div class="flow-node-title">شوف المسار</div>
+                                <div class="flow-node-sub">
+                                    المحطات والطلبات
+                                </div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-17')">
+                                <div class="flow-node-num">17</div>
+                                <div class="flow-node-title">QR Scan</div>
+                                <div class="flow-node-sub">مسح الطرد</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-20')">
+                                <div class="flow-node-num">20</div>
+                                <div class="flow-node-title">
+                                    Proximity Alert
+                                </div>
+                                <div class="flow-node-sub">إشعار 500م</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-13')">
+                                <div class="flow-node-num">13</div>
+                                <div class="flow-node-title">POD Capture</div>
+                                <div class="flow-node-sub">صورة + توقيع</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('d-21')">
+                                <div class="flow-node-num">21</div>
+                                <div class="flow-node-title">RTB / إرجاع</div>
+                                <div class="flow-node-sub">لو مش مسلّم</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-label">
+                    المطاليب — اضغط على أي مطلوب للتفاصيل
+                </div>
+                <div class="fn-list">
+                    <div class="fn-item" id="d-login">
+                        <div class="fn-head" onclick="toggleFn('d-login')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Driver Login & Auth</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السائق بيدخل بـ email + password عشان يوصل
+                                لمساراته وطلباته.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ 42 مطلوب ما ذكروش خالص، بس
+                                من غيره السائق مش قادر يدخل على التطبيق.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-route">
+                        <div class="fn-head" onclick="toggleFn('d-route')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Active Route View</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                صفحة بتعرض المسار المعين للسائق: المحطات
+                                بالترتيب، الطلبات، والـ ETA لكل محطة.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ Dispatcher بيعمل المسار، بس
+                                محتاج السائق يشوفه — ده الـ interface الناقص.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-12">
+                        <div class="fn-head" onclick="toggleFn('d-12')">
+                            <div class="fn-num">12</div>
+                            <div class="fn-title">
+                                Pre-Trip Safety Inspection
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تشيك ليست رقمي إجباري قبل ما السيستم يسمح للسائق
+                                يبدأ الرحلة: إطارات، فرامل، أنوار، وثائق.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> السائق يفتح التطبيق ← يكمّل الـ
+                                checklist ← بعد كده بس يبقى زرار "Start Route"
+                                متاح.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-13">
+                        <div class="fn-head" onclick="toggleFn('d-13')">
+                            <div class="fn-num">13</div>
+                            <div class="fn-title">
+                                Digital Signature Capture
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لما العميل يستلم الطرد، السائق بياخد توقيعه
+                                الرقمي على الشاشة ويتخزن مشفر مع سجل التوصيل.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق يجمع، العميل يوقع
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> وصل ← مسح QR ← العميل يوقع على
+                                الشاشة ← يتحفظ مع الـ timestamp والـ GPS.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-14">
+                        <div class="fn-head" onclick="toggleFn('d-14')">
+                            <div class="fn-num">14</div>
+                            <div class="fn-title">
+                                Photo-Evidence Attachment
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                في حالة "Safe Drop" لما العميل مش موجود، السائق
+                                بياخد صورة لمكان التسليم وبتتخزن مع إحداثيات
+                                GPS.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> العميل مش موجود ← Safe Drop ←
+                                صورة + GPS تلقائي ← اتحفظ في سجل الطلب.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-15">
+                        <div class="fn-head" onclick="toggleFn('d-15')">
+                            <div class="fn-num">15</div>
+                            <div class="fn-title">
+                                Incident Reporting Workflow
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو حصل حادث أو عطل، السائق بيبلغ من التطبيق
+                                ويقدر يطلب سحب أو مساعدة طارئة.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق يبلغ ← Dispatcher يستقبل ← Mechanic
+                                يتعين
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> السائق يختار نوع الحادث ← يضغط
+                                "Request Tow" ← الـ Dispatcher يشوف تنبيه ←
+                                Dynamic Rerouting تشتغل تلقائي.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-16">
+                        <div class="fn-head" onclick="toggleFn('d-16')">
+                            <div class="fn-num">16</div>
+                            <div class="fn-title">Break & Rest Manager</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السيستم بيتابع ساعات شغل السائق وبيلزمه ياخد
+                                فترات راحة حسب قوانين العمل.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق — تلقائي من السيستم
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> بعد X ساعات شغل ← السيستم يحجب
+                                الـ "Complete Delivery" ← السائق لازم يسجل
+                                Break.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-17">
+                        <div class="fn-head" onclick="toggleFn('d-17')">
+                            <div class="fn-num">17</div>
+                            <div class="fn-title">
+                                QR-Code Parcel Verification
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                قبل ما السيستم يسمح للسائق يكمّل التوصيل، لازم
+                                يمسح QR خاص بالطرد للتحقق من الهوية.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> وصل للعميل ← فتح الكاميرا ← مسح
+                                الـ QR ← لو صح يفتح زرار "Complete"، لو غلط
+                                تنبيه.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-18">
+                        <div class="fn-head" onclick="toggleFn('d-18')">
+                            <div class="fn-num">18</div>
+                            <div class="fn-title">COD Reconciliation</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو الطلب cash-on-delivery، السائق بيسجل المبلغ
+                                المحصّل وبيتتبع في سجل حتى يسلمه للمخزن.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق يسجل ← Dispatcher يراجع
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> العميل يدفع كاش ← السائق يدخل
+                                المبلغ ← بيتجمع في ledger ← وقت التسليم للمخزن
+                                بيتطابق.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-19">
+                        <div class="fn-head" onclick="toggleFn('d-19')">
+                            <div class="fn-num">19</div>
+                            <div class="fn-title">Offline Progress Queue</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو النت انقطع، السائق يقدر يكمل شغله عادي،
+                                والبيانات بتتخزن محلياً وبتتزامن أوتوماتيك لما
+                                النت يرجع.
+                            </div>
+                            <div class="fn-who">👤 السائق فقط</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> نت انقطع ← السيستم يعمل offline
+                                mode ← السائق يكمل ← النت رجع ← sync تلقائي.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-20">
+                        <div class="fn-head" onclick="toggleFn('d-20')">
+                            <div class="fn-num">20</div>
+                            <div class="fn-title">
+                                Proximity-Based Auto Check-in
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لما السائق يبقى على بُعد 500 متر من العميل،
+                                السيستم بيبعتله إشعار تلقائي.
+                            </div>
+                            <div class="fn-who">
+                                تلقائي — السائق الـ trigger ← العميل يستقبل
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> GPS السائق يتحرك ← السيستم يحسب
+                                المسافة ← أقل من 500م ← إشعار للعميل تلقائي.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-21">
+                        <div class="fn-head" onclick="toggleFn('d-21')">
+                            <div class="fn-num">21</div>
+                            <div class="fn-title">
+                                Return-to-Base (RTB) Logic
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو الطلب مش قادر يتسلّم، السائق بيسجل السبب
+                                والطرد بيرجع للمخزن.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق يسجل ← Dispatcher يتابع
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> محاولة فاشلة ← السائق يختار
+                                السبب ← الطرد يتحوّل لـ "Returned" ← بيدخل
+                                المخزن تاني.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="d-22">
+                        <div class="fn-head" onclick="toggleFn('d-22')">
+                            <div class="fn-num">22</div>
+                            <div class="fn-title">Driver Performance Score</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السائق يشوف تقييمه المجمّع: سرعة التوصيل + كفاءة
+                                الوقود + تقييمات العملاء.
+                            </div>
+                            <div class="fn-who">
+                                👤 السائق يشوف — Fleet Manager يراجع من الـ
+                                Dashboard
+                            </div>
+                            <div class="fn-how">
+                                <b>المعادلة:</b> (سرعة × وزن) + (وقود × وزن) +
+                                (تقييم العميل × وزن) = Score من 100.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ CUSTOMER PORTAL ══════════════ -->
+            <div class="panel" id="panel-customer">
+                <div class="app-header">
+                    <div class="ah-icon">📦</div>
+                    <div>
+                        <div class="ah-name">Customer Portal</div>
+                        <div class="ah-roles">
+                            <span class="role-chip chip-gray">Public</span>
+                            <span style="font-size: 11px; color: var(--muted)"
+                                >العميل — بدون Login</span
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-section">
+                    <div class="section-label">فلو العملية</div>
+                    <div class="flow-scroll">
+                        <div class="flow-row">
+                            <div class="flow-node" onclick="openFn('c-33')">
+                                <div class="flow-node-num">33</div>
+                                <div class="flow-node-title">يستلم Link</div>
+                                <div class="flow-node-sub">رابط مؤقت</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('c-status')">
+                                <div class="flow-node-num">N</div>
+                                <div class="flow-node-title">Order Status</div>
+                                <div class="flow-node-sub">تاريخ الطلب</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('c-34')">
+                                <div class="flow-node-num">34</div>
+                                <div class="flow-node-title">
+                                    Delivery Prefs
+                                </div>
+                                <div class="flow-node-sub">تعليمات خاصة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('c-35')">
+                                <div class="flow-node-num">35</div>
+                                <div class="flow-node-title">Notifications</div>
+                                <div class="flow-node-sub">إشعارات مباشرة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('c-13p')">
+                                <div class="flow-node-num">13</div>
+                                <div class="flow-node-title">توقيع</div>
+                                <div class="flow-node-sub">عند الاستلام</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('c-36')">
+                                <div class="flow-node-num">36</div>
+                                <div class="flow-node-title">Feedback</div>
+                                <div class="flow-node-sub">تقييم الخدمة</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-label">
+                    المطاليب — اضغط على أي مطلوب للتفاصيل
+                </div>
+                <div class="fn-list">
+                    <div class="fn-item" id="c-33">
+                        <div class="fn-head" onclick="toggleFn('c-33')">
+                            <div class="fn-num">33</div>
+                            <div class="fn-title">
+                                Live Tracking Public Link
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السيستم بيعمل رابط مؤقت لكل طلب، العميل يدخل
+                                عليه من غير ما يعمل حساب ويشوف موقع السيارة على
+                                الخريطة.
+                            </div>
+                            <div class="fn-who">
+                                🔗 رابط عام — العميل بس يشوف بياناته
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> الـ Dispatcher يبعت الـ link
+                                للعميل ← العميل يفتحه ← خريطة فيها موقع السيارة
+                                يتحدث كل X ثواني.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="c-status">
+                        <div class="fn-head" onclick="toggleFn('c-status')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Order Status Page</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                صفحة فيها timeline خطوة بخطوة: "تم الاستلام من
+                                المخزن ← في الطريق ← وصل ← تم التسليم".
+                            </div>
+                            <div class="fn-who">👤 العميل فقط</div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ 33 بيغطي الخريطة فقط، بس
+                                العميل محتاج يشوف تاريخ الطلب كامل.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="c-34">
+                        <div class="fn-head" onclick="toggleFn('c-34')">
+                            <div class="fn-num">34</div>
+                            <div class="fn-title">
+                                Delivery Preference Manager
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                العميل يحدد تعليمات خاصة للتوصيل: "اتركه عند
+                                الجار"، "اطرق بهدوء"، "لا تترك بدون توقيع".
+                            </div>
+                            <div class="fn-who">
+                                👤 العميل يحدد — السائق يشوفه على التطبيق
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> العميل يفتح الـ link ← يختار
+                                نوع التسليم ← السائق يشوف التعليمة على الـ
+                                Driver App.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="c-35">
+                        <div class="fn-head" onclick="toggleFn('c-35')">
+                            <div class="fn-num">35</div>
+                            <div class="fn-title">
+                                Multi-Channel Notifications
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                العميل بيستقبل إشعارات على SMS أو Email أو Web
+                                Push في كل خطوة.
+                            </div>
+                            <div class="fn-who">
+                                تلقائي من السيستم ← العميل يستقبل
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> حدث في المسار ← السيستم يختار
+                                القناة الأنسب حسب الأولوية ← إشعار للعميل.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="c-13p">
+                        <div class="fn-head" onclick="toggleFn('c-13p')">
+                            <div class="fn-num">13</div>
+                            <div class="fn-title">
+                                توقيع الاستلام (من جانب العميل)
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                العميل بيوقع رقمياً على شاشة السائق لتأكيد
+                                الاستلام.
+                            </div>
+                            <div class="fn-who">
+                                👤 العميل يوقع — السائق بيجمع
+                            </div>
+                            <div class="fn-how">
+                                <b>ملاحظة:</b> الوظيفة رقم 13 موجودة في الـ
+                                Driver App، هنا بس الجانب الخاص بالعميل.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="c-36">
+                        <div class="fn-head" onclick="toggleFn('c-36')">
+                            <div class="fn-num">36</div>
+                            <div class="fn-title">Post-Delivery Feedback</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                بعد التسليم، العميل بيقيّم السائق وحالة الطرد
+                                بنجوم وتعليق.
+                            </div>
+                            <div class="fn-who">
+                                👤 العميل يقيّم — بيأثر على Driver Performance
+                                Score
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> تم التسليم ← إشعار "قيّم
+                                تجربتك" ← العميل يبعت التقييم ← بيدخل في الـ
+                                score بتاع السائق.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ MAIN DASHBOARD ══════════════ -->
+            <div class="panel" id="panel-dashboard">
+                <div class="app-header">
+                    <div class="ah-icon">🗂️</div>
+                    <div>
+                        <div class="ah-name">Main Dashboard</div>
+                        <div class="ah-roles">
+                            <span class="role-chip chip-purple"
+                                >Fleet Manager</span
+                            >
+                            <span class="role-chip chip-teal">Dispatcher</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-section">
+                    <div class="section-label">فلو العملية — Dispatcher</div>
+                    <div class="flow-scroll">
+                        <div class="flow-row">
+                            <div class="flow-node" onclick="openFn('db-login')">
+                                <div class="flow-node-num">N</div>
+                                <div class="flow-node-title">Login</div>
+                                <div class="flow-node-sub">
+                                    Dispatcher / Manager
+                                </div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-39')">
+                                <div class="flow-node-num">39</div>
+                                <div class="flow-node-title">رفع الطلبات</div>
+                                <div class="flow-node-sub">CSV Import</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-02')">
+                                <div class="flow-node-num">02</div>
+                                <div class="flow-node-title">Clustering</div>
+                                <div class="flow-node-sub">تقسيم Zones</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-06')">
+                                <div class="flow-node-num">06</div>
+                                <div class="flow-node-title">
+                                    Route Optimize
+                                </div>
+                                <div class="flow-node-sub">ترتيب المحطات</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-03')">
+                                <div class="flow-node-num">03</div>
+                                <div class="flow-node-title">Load Check</div>
+                                <div class="flow-node-sub">تحقق الحمولة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-08')">
+                                <div class="flow-node-num">08</div>
+                                <div class="flow-node-title">Assign Driver</div>
+                                <div class="flow-node-sub">تعيين سائق</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('db-10')">
+                                <div class="flow-node-num">10</div>
+                                <div class="flow-node-title">Monitor ETAs</div>
+                                <div class="flow-node-sub">مراقبة مستمرة</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-label">
+                    المطاليب — اضغط على أي مطلوب للتفاصيل
+                </div>
+                <div class="fn-list">
+                    <div class="fn-item" id="db-login">
+                        <div class="fn-head" onclick="toggleFn('db-login')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Login & Authentication</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                Fleet Manager والـ Dispatcher بيدخلوا بـ email +
+                                password، السيستم بيعرف role كل واحد ويعرضله
+                                الصلاحيات المناسبة.
+                            </div>
+                            <div class="fn-who">
+                                👤 Fleet Manager + Dispatcher
+                            </div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ 42 مش بيتكلم عن آلية الـ
+                                login أصلاً.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-vehicles">
+                        <div class="fn-head" onclick="toggleFn('db-vehicles')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Vehicle CRUD Management</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                إضافة سيارة جديدة للأسطول، تعديل بياناتها (نوع،
+                                حمولة، لوحة)، أو حذفها.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط</div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ 42 بيتكلم عن صيانة سيارات
+                                موجودة بس مش كيف تدخلها في السيستم.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-users">
+                        <div class="fn-head" onclick="toggleFn('db-users')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">User Management (CRUD)</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                إضافة سائقين وـ Dispatchers وميكانيكيين، تعديل
+                                بياناتهم، وإلغاء حساباتهم.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط</div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> الـ RBAC (37) بيتكلم عن
+                                الصلاحيات بس مش عن إدارة المستخدمين نفسهم.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-01">
+                        <div class="fn-head" onclick="toggleFn('db-01')">
+                            <div class="fn-num">01</div>
+                            <div class="fn-title">Route Priority Balancer</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                ترتيب الطلبات حسب: هل البضاعة قابلة للتلف؟ مستوى
+                                أولوية العميل؟ النافذة الزمنية الموعودة؟
+                            </div>
+                            <div class="fn-who">
+                                👤 Dispatcher — تلقائي أو يدوي
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> رفع الطلبات ← السيستم يرتبها
+                                بالأولوية ← Dispatcher يراجع ويعدل لو احتاج.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-02">
+                        <div class="fn-head" onclick="toggleFn('db-02')">
+                            <div class="fn-num">02</div>
+                            <div class="fn-title">Geospatial Clustering</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تجميع نقاط التوصيل المتقاربة جغرافياً في "Zones"
+                                وتعيين كل Zone لأقرب سيارة أو سائق.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> خريطة بالطلبات ← خوارزمية
+                                تجمّعهم ← كل cluster يبقى مسار لسيارة واحدة.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-03">
+                        <div class="fn-head" onclick="toggleFn('db-03')">
+                            <div class="fn-num">03</div>
+                            <div class="fn-title">Load Capacity Checker</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                قبل تأكيد المسار، السيستم بيتحقق إن مجموع وزن
+                                وحجم الطلبات مش بيعدي الطاقة القصوى للسيارة.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher — تلقائي</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> تعيين طلبات للسيارة ← حساب
+                                تلقائي ← لو زاد الحد: تحذير وإيقاف.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-04">
+                        <div class="fn-head" onclick="toggleFn('db-04')">
+                            <div class="fn-num">04</div>
+                            <div class="fn-title">Dynamic Rerouting</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو سيارة عطلت في نص الطريق، السيستم بيوزع باقي
+                                الطلبات على سيارات تانية ويحسب ETAs جديدة.
+                            </div>
+                            <div class="fn-who">
+                                👤 Dispatcher — تلقائي بعد بلاغ السائق
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> سائق يبلغ عطل ← السيستم يلاقي
+                                أقرب سائق فاضي ← يعيد توزيع الطلبات.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-05">
+                        <div class="fn-head" onclick="toggleFn('db-05')">
+                            <div class="fn-num">05</div>
+                            <div class="fn-title">
+                                Stop-Time Estimator (ETA)
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                حساب وقت الوصول لكل محطة بناءً على: المسافة،
+                                متوسط وقت التفريغ، وعدد الطرود.
+                            </div>
+                            <div class="fn-who">
+                                👤 Dispatcher يشوف — Customer بيستقبله
+                            </div>
+                            <div class="fn-how">
+                                <b>المعادلة:</b> (مسافة / سرعة) + (عدد الطرود ×
+                                وقت تفريغ) = ETA لكل محطة.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-06">
+                        <div class="fn-head" onclick="toggleFn('db-06')">
+                            <div class="fn-num">06</div>
+                            <div class="fn-title">
+                                Multi-Drop Sequence Optimizer
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                خوارزمية بتعيد ترتيب المحطات عشان أقل مسافة
+                                إجمالية — مشابه لـ Travelling Salesman Problem.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher — تلقائي</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> قائمة المحطات ← خوارزمية
+                                nearest neighbor ← ترتيب أمثل.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-07">
+                        <div class="fn-head" onclick="toggleFn('db-07')">
+                            <div class="fn-num">07</div>
+                            <div class="fn-title">
+                                Emergency Express Insertion
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                إدخال طلب عاجل في مسار شغال وإعادة حساب باقي
+                                ETAs.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> طلب عاجل جديد ← Dispatcher
+                                يختار المسار ← السيستم يحقن الطلب في أنسب نقطة ←
+                                يعيد حساب الـ ETAs.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-08">
+                        <div class="fn-head" onclick="toggleFn('db-08')">
+                            <div class="fn-num">08</div>
+                            <div class="fn-title">
+                                Driver-Vehicle Pairing Guard
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السيستم بيتحقق إن رخصة السائق تسمح بقيادة
+                                السيارة المعينة.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher — تلقائي</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> Dispatcher يعين سائق لسيارة ←
+                                السيستم يقارن الرخصة بنوع السيارة ← يوافق أو
+                                يمنع.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-09">
+                        <div class="fn-head" onclick="toggleFn('db-09')">
+                            <div class="fn-num">09</div>
+                            <div class="fn-title">Shift Transition Manager</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تسليم مسار وسيارة وطلبات من سائق لآخر في منتصف
+                                الشيفت.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> السائق الأول ينهي شيفته ←
+                                Dispatcher يختار سائق تاني ← كل الطلبات المتبقية
+                                تتحول للسائق الجديد.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-10">
+                        <div class="fn-head" onclick="toggleFn('db-10')">
+                            <div class="fn-num">10</div>
+                            <div class="fn-title">
+                                Delivery Window Violation Alert
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو ETA سائق هيتأخر عن النافذة الزمنية الموعودة،
+                                تنبيه فوري للـ Dispatcher.
+                            </div>
+                            <div class="fn-who">تلقائي ← Dispatcher يستقبل</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> حساب ETA ← مقارنة بالـ promised
+                                window ← لو هيتعدى: تنبيه + خيارات.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-11">
+                        <div class="fn-head" onclick="toggleFn('db-11')">
+                            <div class="fn-num">11</div>
+                            <div class="fn-title">
+                                Fuel-Efficient Speed Advisor
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                اقتراح السرعة المثلى لكل مسار بناءً على وزن
+                                الحمولة وطول المسافة لتوفير الوقود.
+                            </div>
+                            <div class="fn-who">
+                                👤 Dispatcher يشوف — السائق يطبق
+                            </div>
+                            <div class="fn-how">
+                                <b>مثال:</b> سيارة محملة بالكامل ← اقتراح 80
+                                كم/ساعة بدل 100 لتوفير 15% وقود.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-39">
+                        <div class="fn-head" onclick="toggleFn('db-39')">
+                            <div class="fn-num">39</div>
+                            <div class="fn-title">
+                                Bulk Order Import (CSV/XML)
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                رفع قائمة الطلبات اليومية من ملف CSV أو XML جاي
+                                من نظام المبيعات.
+                            </div>
+                            <div class="fn-who">👤 Dispatcher</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> Dispatcher يرفع الملف ← السيستم
+                                يتحقق من الأعمدة ← يستورد الطلبات ← جاهزة
+                                للتوزيع.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-37">
+                        <div class="fn-head" onclick="toggleFn('db-37')">
+                            <div class="fn-num">37</div>
+                            <div class="fn-title">
+                                RBAC — Role-Based Access Control
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تحديد مين يشوف إيه في الـ Dashboard.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط يديره</div>
+                            <div class="fn-how">
+                                <b>مثال:</b> Fleet Manager: كل حاجة |
+                                Dispatcher: routing + orders بس | Mechanic:
+                                maintenance بس.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-38">
+                        <div class="fn-head" onclick="toggleFn('db-38')">
+                            <div class="fn-num">38</div>
+                            <div class="fn-title">
+                                Historical Route Playback
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                مراجعة مسار كامل اتنفذ قبل كده خطوة بخطوة: مين
+                                السائق، وقت كل محطة، أي تأخيرات.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط</div>
+                            <div class="fn-how">
+                                <b>الاستخدام:</b> تحقيق في شكوى ← ولا مراجعة
+                                كفاءة سائق ← ولا تحسين مسار متكرر.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-40">
+                        <div class="fn-head" onclick="toggleFn('db-40')">
+                            <div class="fn-num">40</div>
+                            <div class="fn-title">
+                                Sustainability Report (CO2)
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تقرير شهري بإجمالي انبعاثات الأسطول مع اقتراحات
+                                لتقليلها.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط</div>
+                            <div class="fn-how">
+                                <b>الحساب:</b> مسافة كل سيارة × معامل انبعاثات
+                                النوع = CO2 إجمالي.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-41">
+                        <div class="fn-head" onclick="toggleFn('db-41')">
+                            <div class="fn-num">41</div>
+                            <div class="fn-title">System Audit Trail</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                سجل دائم لكل تعديل يدوي في السيستم: مين غيّر
+                                إيه، امتى، وإيه كانت القيمة قبل وبعد.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager فقط يشوفه</div>
+                            <div class="fn-how">
+                                <b>مثال:</b> Dispatcher غيّر حالة طلب يدوياً ←
+                                السجل يحفظ: user_id + timestamp + القيمة القديمة
+                                + الجديدة.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="db-42">
+                        <div class="fn-head" onclick="toggleFn('db-42')">
+                            <div class="fn-num">42</div>
+                            <div class="fn-title">
+                                Database Integrity Manager
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                أرشفة تلقائية للمسارات القديمة وسجلات الصيانة
+                                المكتملة للحفاظ على سرعة السيستم.
+                            </div>
+                            <div class="fn-who">
+                                👤 Fleet Manager — تشغيل يدوي أو جدولة تلقائية
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> كل فترة ← نقل البيانات الأقدم
+                                من X شهر لجداول archive ← الـ main tables تبقى
+                                خفيفة.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ MAINTENANCE APP ══════════════ -->
+            <div class="panel" id="panel-maintenance">
+                <div class="app-header">
+                    <div class="ah-icon">🔧</div>
+                    <div>
+                        <div class="ah-name">Maintenance App</div>
+                        <div class="ah-roles">
+                            <span class="role-chip chip-purple"
+                                >Fleet Manager</span
+                            >
+                            <span class="role-chip chip-coral">Mechanic</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-section">
+                    <div class="section-label">فلو العملية</div>
+                    <div class="flow-scroll">
+                        <div class="flow-row">
+                            <div class="flow-node" onclick="openFn('m-login')">
+                                <div class="flow-node-num">N</div>
+                                <div class="flow-node-title">Login</div>
+                                <div class="flow-node-sub">
+                                    Mechanic / Manager
+                                </div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-23')">
+                                <div class="flow-node-num">23</div>
+                                <div class="flow-node-title">
+                                    Odometer Alert
+                                </div>
+                                <div class="flow-node-sub">تنبيه صيانة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-30')">
+                                <div class="flow-node-num">30</div>
+                                <div class="flow-node-title">
+                                    Assign Mechanic
+                                </div>
+                                <div class="flow-node-sub">تعيين ميكانيكي</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-25')">
+                                <div class="flow-node-num">25</div>
+                                <div class="flow-node-title">
+                                    Out-of-Service
+                                </div>
+                                <div class="flow-node-sub">قفل السيارة</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-31')">
+                                <div class="flow-node-num">31</div>
+                                <div class="flow-node-title">Spare Parts</div>
+                                <div class="flow-node-sub">طلب قطع</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-26')">
+                                <div class="flow-node-num">26</div>
+                                <div class="flow-node-title">
+                                    إصلاح + Lifecycle
+                                </div>
+                                <div class="flow-node-sub">تحديث السجل</div>
+                            </div>
+                            <div class="flow-arrow">
+                                <svg viewBox="0 0 16 16" fill="none">
+                                    <path
+                                        d="M3 8h10M9 4l4 4-4 4"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <div class="flow-node" onclick="openFn('m-29')">
+                                <div class="flow-node-num">29</div>
+                                <div class="flow-node-title">Cost Check</div>
+                                <div class="flow-node-sub">هل تستاهل؟</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-label">
+                    المطاليب — اضغط على أي مطلوب للتفاصيل
+                </div>
+                <div class="fn-list">
+                    <div class="fn-item" id="m-login">
+                        <div class="fn-head" onclick="toggleFn('m-login')">
+                            <div class="fn-num">N</div>
+                            <div class="fn-title">Mechanic Login & Auth</div>
+                            <div class="fn-right">
+                                <span class="fn-new">جديد</span>
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                الميكانيكي بيعمل login عشان يشوف البلاغات
+                                المعينة له والسيارات المطلوب صيانتها.
+                            </div>
+                            <div class="fn-who">
+                                👤 Mechanic + Fleet Manager
+                            </div>
+                            <div class="fn-how">
+                                <b>ليه جديد؟</b> مش مذكور في الـ 42 خالص، بس من
+                                غيره الميكانيكي مش قادر يدخل على التطبيق.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-23">
+                        <div class="fn-head" onclick="toggleFn('m-23')">
+                            <div class="fn-num">23</div>
+                            <div class="fn-title">
+                                Odometer-Driven Service Alerts
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                السيستم بيتابع عداد كل سيارة وبيبعت تنبيه تلقائي
+                                لما تحتاج زيت أو جاطوك أو أي صيانة دورية.
+                            </div>
+                            <div class="fn-who">
+                                تلقائي ← Fleet Manager + Mechanic
+                            </div>
+                            <div class="fn-how">
+                                <b>مثال:</b> كل 5000 كم ← تنبيه "تغيير زيت" ←
+                                Mechanic يستقبل البلاغ ← يحجز موعد.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-24">
+                        <div class="fn-head" onclick="toggleFn('m-24')">
+                            <div class="fn-num">24</div>
+                            <div class="fn-title">Fuel Expense Audit</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                مقارنة فواتير الوقود الفعلية بالمسافة اللي
+                                اتسافرت — لو في فرق كبير ممكن يكون في تسريب أو
+                                سرقة.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager</div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> السائق يرفع فاتورة وقود ←
+                                السيستم يقارنها بالـ GPS ← لو أكتر من X% فرق:
+                                تنبيه.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-25">
+                        <div class="fn-head" onclick="toggleFn('m-25')">
+                            <div class="fn-num">25</div>
+                            <div class="fn-title">
+                                Vehicle Out-of-Service Lockout
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لما سيارة بتدخل الصيانة، بتتقفل تلقائياً من أي
+                                تعيين جديد في الـ Dashboard.
+                            </div>
+                            <div class="fn-who">
+                                👤 Mechanic يحددها — Dispatcher مش يقدر يعينها
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> Mechanic يغير حالة السيارة لـ
+                                "In Repair" ← السيستم يحذفها من قائمة السيارات
+                                المتاحة.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-26">
+                        <div class="fn-head" onclick="toggleFn('m-26')">
+                            <div class="fn-num">26</div>
+                            <div class="fn-title">
+                                Part Replacement Lifecycle
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تتبع عمر كل قطعة في السيارة: فرامل، بطارية، فلتر
+                                هواء — ومتى اتغيرت آخر مرة.
+                            </div>
+                            <div class="fn-who">
+                                👤 Mechanic يحدّث — Fleet Manager يراجع
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> بعد كل إصلاح ← Mechanic يسجل
+                                القطع المتغيرة ← السيستم يحسب العمر المتبقي.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-27">
+                        <div class="fn-head" onclick="toggleFn('m-27')">
+                            <div class="fn-num">27</div>
+                            <div class="fn-title">
+                                Annual Inspection & Insurance
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تنبيهات قبل انتهاء التأمين أو الفحص الدوري
+                                السنوي لكل سيارة.
+                            </div>
+                            <div class="fn-who">تلقائي ← Fleet Manager</div>
+                            <div class="fn-how">
+                                <b>مثال:</b> 30 يوم قبل انتهاء التأمين ← تنبيه
+                                للـ Fleet Manager ← يجدد.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-28">
+                        <div class="fn-head" onclick="toggleFn('m-28')">
+                            <div class="fn-num">28</div>
+                            <div class="fn-title">
+                                Fuel Efficiency Comparator
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                مقارنة كفاءة استهلاك الوقود بين السيارات لمعرفة
+                                أيها أكثر اقتصاداً.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager</div>
+                            <div class="fn-how">
+                                <b>الناتج:</b> جدول أو رسم بياني: سيارة A = 12
+                                كم/لتر، سيارة B = 9 كم/لتر ← قرار التحديث.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-29">
+                        <div class="fn-head" onclick="toggleFn('m-29')">
+                            <div class="fn-num">29</div>
+                            <div class="fn-title">
+                                Maintenance Cost-to-Value
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                لو تكلفة إصلاح سيارة بتتجاوز نسبة معينة من
+                                قيمتها السوقية، السيستم بيقترح سحبها من الخدمة.
+                            </div>
+                            <div class="fn-who">👤 Fleet Manager</div>
+                            <div class="fn-how">
+                                <b>المعادلة:</b> تكلفة الإصلاح ÷ القيمة السوقية.
+                                لو أكتر من 40% ← "يُنصح بالاستبدال".
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-30">
+                        <div class="fn-head" onclick="toggleFn('m-30')">
+                            <div class="fn-num">30</div>
+                            <div class="fn-title">
+                                Technician Assignment Hub
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تعيين الميكانيكي المناسب على بلاغ صيانة معين،
+                                داخلي أو خارجي.
+                            </div>
+                            <div class="fn-who">
+                                👤 Fleet Manager يعين ← Mechanic يستقبل
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> بلاغ صيانة ← Fleet Manager
+                                يختار ميكانيكي ← الميكانيكي يشوف البلاغ في
+                                تطبيقه.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-31">
+                        <div class="fn-head" onclick="toggleFn('m-31')">
+                            <div class="fn-num">31</div>
+                            <div class="fn-title">Spare Parts Inventory</div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                تتبع مخزون قطع الغيار في الجراج: زيوت، فلاتر،
+                                لمبات، فرامل.
+                            </div>
+                            <div class="fn-who">
+                                👤 Mechanic يستخدم — Fleet Manager يراجع
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> Mechanic يطلب قطعة ← السيستم
+                                يخصمها من المخزن ← لو وصل للحد الأدنى: تنبيه
+                                إعادة طلب.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fn-item" id="m-32">
+                        <div class="fn-head" onclick="toggleFn('m-32')">
+                            <div class="fn-num">32</div>
+                            <div class="fn-title">
+                                Emergency Roadside Assistance
+                            </div>
+                            <div class="fn-right">
+                                <div class="fn-chevron">
+                                    <svg viewBox="0 0 12 12" fill="none">
+                                        <path
+                                            d="M3 2l4 4-4 4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fn-body">
+                            <div class="fn-what">
+                                إرسال مساعدة طارئة لموقع السائق العاطل بالضبط.
+                            </div>
+                            <div class="fn-who">
+                                👤 Fleet Manager / Dispatcher يقرر ← Mechanic
+                                ينفّذ
+                            </div>
+                            <div class="fn-how">
+                                <b>الـ flow:</b> السائق يبلغ عطل ← موقع GPS
+                                تلقائي ← Fleet Manager يبعت أقرب ميكانيكي.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function switchTab(name) {
+                document
+                    .querySelectorAll(".tab")
+                    .forEach((t) =>
+                        t.classList.toggle("active", t.dataset.id === name),
+                    );
+                document
+                    .querySelectorAll(".panel")
+                    .forEach((p) => p.classList.remove("active"));
+                document
+                    .getElementById("panel-" + name)
+                    .classList.add("active");
+            }
+            function toggleFn(id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle("open");
+            }
+            function openFn(id) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.classList.add("open");
+                el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        </script>
+    </body>
+</html>
