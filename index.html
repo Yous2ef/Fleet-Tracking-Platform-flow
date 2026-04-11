@@ -828,12 +828,19 @@
             }
             .ms-fn-pill {
                 display: flex;
+                flex-direction: column;
                 align-items: flex-start;
                 gap: 6px;
                 padding: 6px 9px;
                 border-radius: var(--radius-sm);
                 border: 1px solid var(--border);
                 background: var(--surface2);
+            }
+            .ms-fn-pill > div:first-child {
+                display: flex;
+                align-items: flex-start;
+                gap: 6px;
+                width: 100%;
             }
             .ms-fn-num {
                 font-family: var(--mono);
@@ -846,6 +853,60 @@
                 font-size: 12px;
                 color: var(--text);
                 line-height: 1.35;
+            }
+            .ms-pri {
+                margin-inline-start: auto;
+                font-size: 9px;
+                font-family: var(--mono);
+                padding: 1px 6px;
+                border-radius: 20px;
+                border: 1px solid var(--border2);
+                line-height: 1.5;
+            }
+            .ms-pri.must {
+                color: #fca5a5;
+                border-color: rgba(252, 165, 165, 0.35);
+                background: rgba(252, 165, 165, 0.1);
+            }
+            .ms-pri.should {
+                color: #fcd34d;
+                border-color: rgba(252, 211, 77, 0.35);
+                background: rgba(252, 211, 77, 0.1);
+            }
+            .ms-pri.nice {
+                color: #86efac;
+                border-color: rgba(134, 239, 172, 0.35);
+                background: rgba(134, 239, 172, 0.1);
+            }
+            .ms-fn-clickable {
+                cursor: pointer;
+            }
+            .ms-fn-desc {
+                font-size: 12px;
+                color: var(--text);
+                line-height: 1.5;
+                padding-top: 6px;
+                border-top: 1px solid var(--border);
+                margin-top: 6px;
+                font-weight: 400;
+                width: 100%;
+            }
+            .ms-fn-desc-hidden {
+                display: none;
+            }
+            .ms-req-toggle {
+                display: inline-block;
+                color: var(--muted);
+                font-size: 11px;
+                margin-inline-start: 8px;
+                transition: opacity 0.2s;
+                cursor: pointer;
+            }
+            .ms-req-toggle:hover {
+                opacity: 1 !important;
+            }
+            .ms-req-hidden {
+                display: none;
             }
             .ms-stack-row {
                 display: flex;
@@ -3162,7 +3223,7 @@
                             <div class="ms-top-title">
                                 Fleet Platform - Backend Microservices
                             </div>
-                            <div class="ms-top-sub">
+                            <div class="ms-top-sub" id="ms-summary">
                                 Laravel-first architecture with SQL Server
                             </div>
                         </div>
@@ -3222,42 +3283,86 @@
                     icon: "🔐",
                     name: "Auth & Identity Service",
                     fns: [
-                        { n: "N", t: "Driver Login & Auth" },
-                        { n: "N", t: "Mechanic / Manager Login" },
-                        { n: "37", t: "RBAC - Role-Based Access Control" },
-                        { n: "N", t: "JWT Token Management" },
+                        {
+                            n: "AUTH-01",
+                            t: "Driver Login & Auth",
+                            p: "must",
+                            d: "تسجيل دخول السائقين برقم الهاتف/البريد كلمة المرور مع التحقق من الحساب النشط",
+                        },
+                        {
+                            n: "AUTH-02",
+                            t: "Staff Login (Manager/Mechanic)",
+                            p: "must",
+                            d: "تسجيل الموظفين والمديرين والفنيين برقم الموظف أو البريد الإلكتروني",
+                        },
+                        {
+                            n: "AUTH-03",
+                            t: "RBAC Policy Engine (37)",
+                            p: "must",
+                            d: "نظام تحكم إدارة الأدوار والصلاحيات، كل دور له مجموعة محددة من الأذونات",
+                        },
+                        {
+                            n: "AUTH-04",
+                            t: "Access/Refresh Token Flow",
+                            p: "must",
+                            d: "إصدار tokens قصيرة الأجل (15 دقيقة) وrefresh tokens طويلة الأجل (7 أيام)",
+                        },
+                        {
+                            n: "AUTH-05",
+                            t: "Logout All Sessions",
+                            p: "must",
+                            d: "تسجيل خروج السائق من جميع الأجهزة مرة واحدة وإلغاء جميع الـ tokens النشطة",
+                        },
+                        {
+                            n: "AUTH-06",
+                            t: "Forgot / Reset Password",
+                            p: "must",
+                            d: "رسالة إعادة تعيين كلمة المرور عبر البريد مع رمز مؤقت صالح لمدة ساعة واحدة",
+                        },
+                        {
+                            n: "AUTH-07",
+                            t: "MFA Challenge",
+                            p: "should",
+                            d: "التحقق من الهوية بخطوتين (OTP عبر SMS)، اختياري للحسابات الحساسة",
+                        },
+                        {
+                            n: "AUTH-08",
+                            t: "Service-to-Service Auth",
+                            p: "should",
+                            d: "مفاتيح API للمصادقة بين الخدمات الداخلية مع تتبع معدل الاستخدام",
+                        },
                     ],
                     stack: [
                         "Laravel 12",
-                        "Laravel Sanctum / JWT",
+                        "Laravel Sanctum",
                         "SQL Server",
                         "Redis",
                         "Laravel Rate Limiter",
                     ],
                     reqs: [
                         {
-                            l: "SQL Server",
-                            s: "جداول users / roles / permissions + indexes",
+                            l: "Primary DB",
+                            s: "SQL Server مع جداول users/roles/permissions وفهارس مناسبة",
                         },
                         {
-                            l: "Token Strategy",
-                            s: "Sanctum personal tokens أو JWT RS256 بمفاتيح من env",
+                            l: "Auth Strategy",
+                            s: "Sanctum كخيار موحد بدل المزج بين Sanctum و JWT",
                         },
                         {
-                            l: "Password Hashing",
-                            s: "Laravel Hash::make باستخدام Argon2id أو bcrypt",
+                            l: "Password Security",
+                            s: "Hash::make + password policy + reset tokens",
                         },
                         {
-                            l: "Redis Sessions",
-                            s: "تخزين sessions / refresh tokens مع expiry تلقائي",
+                            l: "Session Control",
+                            s: "Redis لتخزين sessions/tokens + revoke فوري",
                         },
                         {
-                            l: "Rate Limiting",
-                            s: "حماية endpoints زي /login من brute-force",
+                            l: "Login Protection",
+                            s: "Rate limit + lockout + audit on failed attempts",
                         },
                         {
                             l: "Shared Middleware",
-                            s: "auth + permission middleware قابل لإعادة الاستخدام",
+                            s: "auth + permissions middleware موحد لكل الخدمات",
                         },
                     ],
                 },
@@ -3266,42 +3371,86 @@
                     icon: "📡",
                     name: "Real-time Tracking & GPS Service",
                     fns: [
-                        { n: "33", t: "Live Tracking Public Link" },
-                        { n: "20", t: "Proximity Alert (500m)" },
-                        { n: "N", t: "Live Vehicle Location Stream" },
-                        { n: "25", t: "Out-of-Service Flag" },
+                        {
+                            n: "RT-01",
+                            t: "Live Tracking Public Link (33)",
+                            p: "must",
+                            d: "رابط عام للعملاء لمتابعة المركبة في الوقت الفعلي مع صلاحيات PII مخفاة",
+                        },
+                        {
+                            n: "RT-02",
+                            t: "Vehicle Location Ingestion Stream",
+                            p: "must",
+                            d: "استقبال تحديثات موقع GPS من السائق كل 5 ثوان عبر Reverb WebSocket",
+                        },
+                        {
+                            n: "RT-03",
+                            t: "Proximity Alert 500m (20)",
+                            p: "must",
+                            d: "تنبيه العميل تلقائياً عندما تكون المركبة على بعد 500 متر من العنوان",
+                        },
+                        {
+                            n: "RT-04",
+                            t: "Geofence Entry/Exit Events",
+                            p: "must",
+                            d: "تسجيل دخول/خروج المركبة من المناطق المعرّفة مسبقاً وتوليد أحداث",
+                        },
+                        {
+                            n: "RT-05",
+                            t: "Driver Heartbeat Timeout",
+                            p: "must",
+                            d: "اعتبار السائق غير متصل إذا لم يرسل ticks لمدة 3 دقائق وإشعار الداسبورد",
+                        },
+                        {
+                            n: "RT-06",
+                            t: "GPS Spoofing Detection",
+                            p: "should",
+                            d: "كشف القفزات المريبة في الموقع (سرعة > 300 كم/س) وتحذير من الاحتيال",
+                        },
+                        {
+                            n: "RT-07",
+                            t: "Last Known Location Fallback",
+                            p: "should",
+                            d: "عرض آخر موقع معروف للمركبة إذا انقطع الاتصال بدلاً من عدم الظهور",
+                        },
+                        {
+                            n: "RT-08",
+                            t: "Out-of-Service Sync (25)",
+                            p: "should",
+                            d: "مزامنة حالة المركبة (قيد الإصلاح/قيد الصيانة) تلقائياً عبر الخدمات",
+                        },
                     ],
                     stack: [
-                        "Laravel Reverb / WebSockets",
+                        "Laravel Reverb",
                         "Redis Pub/Sub",
                         "SQL Server Geography",
-                        "Laravel Queues",
-                        "Maps API Integration",
+                        "Laravel Queue",
+                        "Google Maps Platform",
                     ],
                     reqs: [
                         {
-                            l: "WebSocket Layer",
-                            s: "Laravel Reverb لبث الموقع الحقيقي كل 5 ثواني",
+                            l: "Realtime Channel",
+                            s: "Reverb channels لبث location updates بزمن شبه لحظي",
                         },
                         {
-                            l: "Redis Pub/Sub",
-                            s: "توزيع updates بين instances متعددة",
+                            l: "Distance Engine",
+                            s: "SQL Server geography + STDistance لحسابات القرب",
                         },
                         {
-                            l: "SQL Geography",
-                            s: "استخدام STDistance لحسابات القرب والمسافات",
+                            l: "Signed Links",
+                            s: "روابط tracking موقعة بوقت انتهاء واضح",
                         },
                         {
-                            l: "Signed URLs",
-                            s: "روابط tracking مؤقتة تنتهي تلقائياً",
+                            l: "Accuracy Filter",
+                            s: "تجاهل نقاط GPS inaccurate قبل الحساب",
                         },
                         {
-                            l: "Geofence Rules",
-                            s: "حساب proximity 500m على مستوى الإحداثيات",
+                            l: "Heartbeat Policy",
+                            s: "اعتبار السائق offline بعد انقطاع pings لمدة محددة",
                         },
                         {
-                            l: "GPS Ingestion",
-                            s: "استقبال location pings دورية من تطبيق السائق",
+                            l: "Scaling",
+                            s: "Redis Pub/Sub لتوزيع التحديثات بين instances",
                         },
                     ],
                 },
@@ -3310,46 +3459,110 @@
                     icon: "🗺️",
                     name: "Route & Dispatch Service",
                     fns: [
-                        { n: "06", t: "Multi-Drop Sequence Optimizer" },
-                        { n: "05", t: "Stop-Time Estimator (ETA)" },
-                        { n: "07", t: "Emergency Express Insertion" },
-                        { n: "04", t: "Breakdown Route Redistribution" },
-                        { n: "09", t: "Shift Transition Manager" },
-                        { n: "08", t: "Driver-Vehicle Pairing Guard" },
-                        { n: "11", t: "Fuel-Efficient Speed Advisor" },
-                        { n: "10", t: "Delivery Window Violation Alert" },
+                        {
+                            n: "RD-01",
+                            t: "Route Priority Balancer (01)",
+                            p: "must",
+                            d: "ترتيب الطلبات حسب الأولوية (Express/Normal) والموقع الجغرافي قبل التوزيع",
+                        },
+                        {
+                            n: "RD-02",
+                            t: "Geospatial Clustering (02)",
+                            p: "must",
+                            d: "تجميع الطلبات ضمن مناطق جغرافية متقاربة لتقليل الوقت والمسافة",
+                        },
+                        {
+                            n: "RD-03",
+                            t: "Load Capacity Checker (03)",
+                            p: "must",
+                            d: "التحقق من سعة المركبة (الوزن، العدد) قبل إسناد طلبات جديدة",
+                        },
+                        {
+                            n: "RD-04",
+                            t: "Multi-Drop Sequence Optimizer (06)",
+                            p: "must",
+                            d: "أمثل ترتيب النقاط على الطريق باستخدام خوارزمية TSP للحد من المسافة",
+                        },
+                        {
+                            n: "RD-05",
+                            t: "Stop-Time ETA Estimator (05)",
+                            p: "must",
+                            d: "حساب وقت التسليم المتوقع لكل طلب مع الأخذ في الاعتبار وقت التوقف",
+                        },
+                        {
+                            n: "RD-06",
+                            t: "Emergency Express Insertion (07)",
+                            p: "must",
+                            d: "إدراج طلبات الطوارئ في المسار الجاري مع إعادة حساب ETA",
+                        },
+                        {
+                            n: "RD-07",
+                            t: "Breakdown Redistribution (04)",
+                            p: "must",
+                            d: "إعادة توزيع طلبات المركبة المعطلة تلقائياً على مركبات أخرى",
+                        },
+                        {
+                            n: "RD-08",
+                            t: "Shift Transition Manager (09)",
+                            p: "must",
+                            d: "الانتقال بين الفترات (صباح/مساء) وإعادة تعيين المسارات حسب الجداول",
+                        },
+                        {
+                            n: "RD-09",
+                            t: "Driver-Vehicle Pairing Guard (08)",
+                            p: "must",
+                            d: "التحقق من توافق السائق والمركبة (الترخيص والشهادات الصحية)",
+                        },
+                        {
+                            n: "RD-10",
+                            t: "Delivery Window Alert (10)",
+                            p: "must",
+                            d: "تنبيه إذا كان الطلب سيتأخر عن نافذة التسليم المحددة",
+                        },
+                        {
+                            n: "RD-11",
+                            t: "Fuel Speed Advisor (11)",
+                            p: "should",
+                            d: "توصيات السرعة الاقتصادية للسائق بناءً على أسعار الوقود وكفاءة المركبة",
+                        },
+                        {
+                            n: "RD-12",
+                            t: "Manual Override + Route Versioning",
+                            p: "should",
+                            d: "السماح بتعديل يدوي للمسارات مع تتبع إصدارات التغييرات والتحقق من الصلاحيات",
+                        },
                     ],
                     stack: [
                         "Laravel",
                         "SQL Server",
-                        "Laravel Queues (Redis)",
+                        "Laravel Queue (Redis)",
                         "Laravel Scheduler",
-                        "OSRM / Google Routes API",
+                        "Google Routes API",
                     ],
                     reqs: [
                         {
-                            l: "Routing Engine",
-                            s: "OSRM self-hosted أو Google Routes API",
+                            l: "Routing Source",
+                            s: "Google Routes API كخيار موحد للحسابات الملاحية",
                         },
                         {
-                            l: "TSP Heuristic",
-                            s: "Nearest Neighbor كبداية مع تحسينات لاحقة",
+                            l: "Optimization",
+                            s: "Heuristic TSP + constraint checks (time/load/driver)",
                         },
                         {
-                            l: "ETA Formula",
-                            s: "(distance/speed) + (parcels x unload_time)",
+                            l: "Async Jobs",
+                            s: "إعادة التوزيع وإعادة الحساب عبر queues",
                         },
                         {
-                            l: "Queue Workers",
-                            s: "إعادة توزيع الطلبات async عبر Laravel Queue",
+                            l: "Override Audit",
+                            s: "كل تعديل يدوي على المسار لازم يتسجل قبل/بعد",
                         },
                         {
-                            l: "License Validation",
-                            s: "مطابقة رخصة السائق مع فئة المركبة",
+                            l: "ETA Monitor",
+                            s: "job كل دقيقة لمقارنة ETA بالـ promised windows",
                         },
                         {
-                            l: "Scheduler Job",
-                            s: "مقارنة ETA مع promised window كل دقيقة",
+                            l: "Idempotency",
+                            s: "حماية endpoints الحساسة من التكرار غير المقصود",
                         },
                     ],
                 },
@@ -3358,46 +3571,110 @@
                     icon: "📦",
                     name: "Order Management Service",
                     fns: [
-                        { n: "17", t: "QR / Barcode Scan" },
-                        { n: "13", t: "POD Capture (Photo + Signature)" },
-                        { n: "21", t: "Return-to-Base (RTB) Logic" },
-                        { n: "34", t: "Delivery Preference Manager" },
-                        { n: "39", t: "Bulk Order Import (CSV/XML)" },
-                        { n: "N", t: "Order Status Timeline" },
-                        { n: "N", t: "Active Route View" },
-                        { n: "12", t: "Pre-Trip Vehicle Inspection" },
+                        {
+                            n: "OM-01",
+                            t: "Bulk Order Import (39)",
+                            p: "must",
+                            d: "استيراد طلبات جماعية من ملفات CSV/XML مع التحقق من صحة البيانات",
+                        },
+                        {
+                            n: "OM-02",
+                            t: "Active Route View",
+                            p: "must",
+                            d: "عرض الطلبات على الطريق الحالية للسائق على خريطة تفاعلية",
+                        },
+                        {
+                            n: "OM-03",
+                            t: "Pre-Trip Inspection (12)",
+                            p: "must",
+                            d: "فحص المركبة قبل البدء (وقود، إطارات، تنوير) مع توثيق الحالة",
+                        },
+                        {
+                            n: "OM-04",
+                            t: "QR / Barcode Verification (17)",
+                            p: "must",
+                            d: "مسح رقم الطلب بـ QR/Barcode للتحقق من المطابقة قبل التسليم",
+                        },
+                        {
+                            n: "OM-05",
+                            t: "POD Capture Photo + Signature (13)",
+                            p: "must",
+                            d: "التقاط صورة التوقيع والصورة كدليل تسليم وحفظها على Azure Blob",
+                        },
+                        {
+                            n: "OM-06",
+                            t: "Delivery Preference Manager (34)",
+                            p: "must",
+                            d: "إدارة تفضيلات التسليم (وقت، موقع بديل، متطلبات خاصة)",
+                        },
+                        {
+                            n: "OM-07",
+                            t: "RTB Workflow (21)",
+                            p: "must",
+                            d: "آلية العودة للإصلاح: عودة - تقييم - تصحيح - إعادة تسليم",
+                        },
+                        {
+                            n: "OM-08",
+                            t: "Order Status Timeline",
+                            p: "must",
+                            d: "عرض مسار حياة الطلب برسم بياني زمني (تم، إرسال، توصيل، فشل)",
+                        },
+                        {
+                            n: "OM-09",
+                            t: "Partial Delivery Handling",
+                            p: "should",
+                            d: "السماح بتسليم جزء من الطلب وجدولة إعادة محاولة للباقي",
+                        },
+                        {
+                            n: "OM-10",
+                            t: "Reattempt Scheduling",
+                            p: "should",
+                            d: "جدولة محاولات إعادة تسليم تلقائية مع تراجع أسّي",
+                        },
+                        {
+                            n: "OM-11",
+                            t: "COD Reconciliation (18)",
+                            p: "should",
+                            d: "تسوية النقد عند الاستقبال: مطابقة المستلم مع قيمة الطلب",
+                        },
+                        {
+                            n: "OM-12",
+                            t: "Failure Reason Taxonomy",
+                            p: "should",
+                            d: "تصنيف أسباب الفشل الموحد (عنوان خاطئ، عميل غير موجود، إلخ)",
+                        },
                     ],
                     stack: [
                         "Laravel REST APIs",
                         "SQL Server",
                         "Laravel Filesystem",
+                        "Azure Blob Storage",
                         "Intervention Image",
-                        "CSV / XML Parsers",
                     ],
                     reqs: [
                         {
-                            l: "File Storage",
-                            s: "S3 أو Azure Blob باستخدام Laravel Filesystem",
+                            l: "Import Validation",
+                            s: "Schema validation للـ CSV/XML قبل الإدخال",
                         },
                         {
-                            l: "QR Validation",
-                            s: "تحقق server-side من parcel codes قبل التسليم",
+                            l: "Order State Machine",
+                            s: "Pending -> InTransit -> Delivered/Returned/Failed",
                         },
                         {
-                            l: "CSV/XML Import",
-                            s: "validation schema قبل إدخال أي records",
+                            l: "Media Storage",
+                            s: "Azure Blob لكل صور POD والتوقيعات",
                         },
                         {
-                            l: "State Machine",
-                            s: "Pending -> InTransit -> Delivered / Returned",
+                            l: "Proof Integrity",
+                            s: "تحقق من التوقيع/الصورة + timestamp + location",
                         },
                         {
-                            l: "Image Optimization",
-                            s: "ضغط الصور قبل التخزين لتقليل الحجم",
+                            l: "Failure Taxonomy",
+                            s: "قائمة أسباب فشل موحدة لاستخدامها في analytics",
                         },
                         {
-                            l: "Inspection Schema",
-                            s: "قالب موحد لفحص ما قبل الرحلة",
+                            l: "Idempotent Updates",
+                            s: "منع تغيير حالة الطلب مرتين بنفس الحدث",
                         },
                     ],
                 },
@@ -3406,44 +3683,104 @@
                     icon: "🔔",
                     name: "Notification Service",
                     fns: [
-                        { n: "35", t: "Multi-Channel Notifications" },
-                        { n: "20", t: "Proximity Alert -> Customer" },
-                        { n: "10", t: "Delivery Window Violation Alert" },
-                        { n: "23", t: "Odometer Maintenance Alert" },
-                        { n: "31", t: "Spare Parts Low-Stock Alert" },
-                        { n: "32", t: "Emergency Roadside Alert" },
+                        {
+                            n: "NF-01",
+                            t: "Notification Event Intake",
+                            p: "must",
+                            d: "استقبال أحداث النظام وإدراجها في قائمة الانتظار للمعالجة",
+                        },
+                        {
+                            n: "NF-02",
+                            t: "User Preference Center",
+                            p: "must",
+                            d: "لوحة تحكم تفضيلات المستخدم: اختيار قنوات الإشعار والأوقات المفضلة",
+                        },
+                        {
+                            n: "NF-03",
+                            t: "Push Notifications (35)",
+                            p: "must",
+                            d: "إرسال تنبيهات الهاتف المحمول عبر Firebase FCM",
+                        },
+                        {
+                            n: "NF-04",
+                            t: "SMS Notifications",
+                            p: "must",
+                            d: "إرسال رسائل نصية عبر Twilio كقناة بديلة",
+                        },
+                        {
+                            n: "NF-05",
+                            t: "Email Notifications",
+                            p: "must",
+                            d: "إرسال بريد إلكتروني عبر SMTP/SES للتنبيهات الرسمية",
+                        },
+                        {
+                            n: "NF-06",
+                            t: "Proximity Customer Alert (20)",
+                            p: "must",
+                            d: "تنبيه العميل تلقائياً بالإشعارات المتعددة عند اقتراب التسليم",
+                        },
+                        {
+                            n: "NF-07",
+                            t: "Delivery Delay Alert (10)",
+                            p: "must",
+                            d: "إشعار فوري إذا كنا سنتجاوز نافذة التسليم المأمولة",
+                        },
+                        {
+                            n: "NF-08",
+                            t: "Maintenance Alerts (23/31/32)",
+                            p: "should",
+                            d: "تنبيهات الصيانة (زيت، إطارات، فحص دوري) للمديرين",
+                        },
+                        {
+                            n: "NF-09",
+                            t: "Deduplication Guard",
+                            p: "should",
+                            d: "منع إرسال نفس الإشعار مرتين بفترة زمنية قصيرة",
+                        },
+                        {
+                            n: "NF-10",
+                            t: "Retry + Escalation + Quiet Hours",
+                            p: "should",
+                            d: "إعادة محاولة 3 مرات + التصعيد + احترام ساعات الهدوء",
+                        },
+                        {
+                            n: "NF-11",
+                            t: "Delivery Status Tracking",
+                            p: "should",
+                            d: "تتبع حالة الإشعار (مرسل، تم التسليم، قُرئ)",
+                        },
                     ],
                     stack: [
                         "Laravel Notifications",
                         "Firebase FCM",
-                        "Twilio SMS",
-                        "Mail (SES/SMTP)",
-                        "RabbitMQ / Redis Queue",
+                        "Twilio",
+                        "SMTP / SES",
+                        "Laravel Queue (Redis)",
                     ],
                     reqs: [
                         {
-                            l: "Push Notifications",
-                            s: "قنوات FCM لموبايل السائق والعميل",
+                            l: "Single Queue Strategy",
+                            s: "Redis queues كحل موحد لتجنب ازدواجية البنية",
                         },
                         {
-                            l: "SMS Gateway",
-                            s: "Twilio أو مزود بديل عند عدم توفر التطبيق",
+                            l: "Channel Fallback",
+                            s: "لو Push فشل يتحول SMS/Email حسب policy",
                         },
                         {
-                            l: "Email Channel",
-                            s: "رسائل رسمية للتقارير والتنبيهات المهمة",
+                            l: "Template Versioning",
+                            s: "نسخ قوالب الإشعارات مع rollback",
                         },
                         {
-                            l: "Event Queue",
-                            s: "فصل الإرسال عن الخدمات الأساسية عبر queue",
+                            l: "Dedup Key",
+                            s: "منع إرسال نفس الحدث لنفس المستخدم أكثر من مرة",
                         },
                         {
                             l: "Retry Policy",
-                            s: "3 retries مع backoff عند فشل الإرسال",
+                            s: "3 retries مع exponential backoff + dead-letter handling",
                         },
                         {
-                            l: "Templates",
-                            s: "Blade templates لكل نوع notification",
+                            l: "Delivery Logs",
+                            s: "تسجيل sent/delivered/failed لكل رسالة",
                         },
                     ],
                 },
@@ -3452,14 +3789,72 @@
                     icon: "🔧",
                     name: "Maintenance Service",
                     fns: [
-                        { n: "23", t: "Odometer-Based Maintenance Alert" },
-                        { n: "30", t: "Technician Assignment Hub" },
-                        { n: "25", t: "Out-of-Service Flag" },
-                        { n: "31", t: "Spare Parts Inventory" },
-                        { n: "26", t: "Vehicle Lifecycle & Repair Log" },
-                        { n: "32", t: "Emergency Roadside Assistance" },
-                        { n: "29", t: "Maintenance Cost-to-Value" },
-                        { n: "28", t: "Fuel Efficiency Comparator" },
+                        {
+                            n: "MT-01",
+                            t: "Odometer Service Alert (23)",
+                            p: "must",
+                            d: "تنبيهات صيانة تلقائية عند الوصول لمسافات محددة (كل 10000 كم)",
+                        },
+                        {
+                            n: "MT-02",
+                            t: "Work Order Lifecycle",
+                            p: "must",
+                            d: "دورة حياة أمر الإصلاح: فتح → تعيين → قيد التنفيذ → مكتمل → مُغلق",
+                        },
+                        {
+                            n: "MT-03",
+                            t: "Technician Assignment Hub (30)",
+                            p: "must",
+                            d: "تعيين الفنيين للصيانة بناءً على التخصص والموقع والتوافر",
+                        },
+                        {
+                            n: "MT-04",
+                            t: "Out-of-Service Lockout (25)",
+                            p: "must",
+                            d: "منع استخدام المركبة تلقائياً عند دخولها حالة الصيانة",
+                        },
+                        {
+                            n: "MT-05",
+                            t: "Spare Parts Inventory (31)",
+                            p: "must",
+                            d: "إدارة المخزون: حد أدنى، مستوى إعادة الطلب، وقت التسليم من المورد",
+                        },
+                        {
+                            n: "MT-06",
+                            t: "Repair Log Lifecycle (26)",
+                            p: "must",
+                            d: "توثيق كل خطوات الإصلاح (الفحص، قطع الغيار، الاختبار)",
+                        },
+                        {
+                            n: "MT-07",
+                            t: "Emergency Roadside Dispatch (32)",
+                            p: "must",
+                            d: "جهاز إنقاذ طوارئ على الطريق مع أولوية فورية",
+                        },
+                        {
+                            n: "MT-08",
+                            t: "Maintenance Cost-to-Value (29)",
+                            p: "should",
+                            d: "توصية بالاستبدال إذا كانت تكلفة الإصلاح > 40% من قيمة المركبة",
+                        },
+                        {
+                            n: "MT-09",
+                            t: "Fuel Efficiency Comparator (28)",
+                            p: "should",
+                            d: "مقارنة كفاءة استهلاك الوقود قبل وبعد الصيانة",
+                        },
+                        {
+                            n: "MT-10",
+                            t: "Part Warranty Tracking",
+                            p: "should",
+                            d: "تتبع ضمان قطع الغيار المستخدمة وفترات الصلاحية",
+                        },
+                        {
+                            n: "MT-11",
+                            t: "Preventive Plan Templates",
+                            p: "nice",
+                            d: "قوالب خطط صيانة وقائية معرّفة مسبقاً حسب نوع المركبة",
+                        },
                     ],
                     stack: [
                         "Laravel",
@@ -3470,28 +3865,28 @@
                     ],
                     reqs: [
                         {
-                            l: "Odometer Jobs",
-                            s: "مهام يومية عبر Scheduler لفحص قراءات العداد",
+                            l: "Work Order States",
+                            s: "open -> assigned -> in_progress -> resolved -> closed",
                         },
                         {
-                            l: "Vehicle Status Enum",
-                            s: "available / in_service / out_of_service",
+                            l: "Vehicle Status",
+                            s: "enum موحد: available/in_service/out_of_service",
                         },
                         {
-                            l: "Parts Inventory",
-                            s: "جدول parts مع minimum_stock و reorder_level",
+                            l: "Parts Thresholds",
+                            s: "minimum_stock + reorder_level + supplier lead time",
                         },
                         {
-                            l: "Repair Log",
-                            s: "vehicle_id, date, cost, mechanic_id, notes",
+                            l: "Cost Rule Engine",
+                            s: "repair_cost / market_value > 0.4 يولد recommendation",
                         },
                         {
-                            l: "Cost Rule",
-                            s: "repair_cost / market_value > 0.4 يطلق تنبيه",
+                            l: "Technician Capacity",
+                            s: "التحقق من التوافر قبل أي assignment",
                         },
                         {
-                            l: "Technician Availability",
-                            s: "جدولة توافر الميكانيكيين قبل التعيين",
+                            l: "Audit Hooks",
+                            s: "تسجيل كل تغيير في work orders والمخزون",
                         },
                     ],
                 },
@@ -3500,44 +3895,92 @@
                     icon: "📊",
                     name: "Reporting & Analytics Service",
                     fns: [
-                        { n: "22", t: "Driver Performance Score" },
-                        { n: "28", t: "Fuel Efficiency Comparator" },
-                        { n: "40", t: "Fleet Utilization Report" },
-                        { n: "41", t: "On-Time Delivery Rate KPI" },
-                        { n: "N", t: "Daily / Weekly Auto Reports" },
-                        { n: "29", t: "Maintenance Cost Analysis" },
+                        {
+                            n: "AN-01",
+                            t: "KPI Aggregation Jobs",
+                            p: "must",
+                            d: "حساب المؤشرات الرئيسية (KPIs) يومياً من البيانات الخام",
+                        },
+                        {
+                            n: "AN-02",
+                            t: "Driver Performance Score (22)",
+                            p: "must",
+                            d: "درجة أداء السائق: الالتزام بالوقت، السلامة، استهلاك الوقود",
+                        },
+                        {
+                            n: "AN-03",
+                            t: "Fleet Utilization Report (40)",
+                            p: "must",
+                            d: "تقرير استخدام الأسطول: ساعات العمل، الطاقة المستخدمة",
+                        },
+                        {
+                            n: "AN-04",
+                            t: "On-Time Delivery KPI (41)",
+                            p: "must",
+                            d: "نسبة التسليم في الوقت المحدد (%) على مستوى اليومي/الأسبوعي",
+                        },
+                        {
+                            n: "AN-05",
+                            t: "Fuel Efficiency Benchmark (28)",
+                            p: "should",
+                            d: "مقارنة كفاءة الوقود لكل مركبة مع المتوسط والمعايير",
+                        },
+                        {
+                            n: "AN-06",
+                            t: "Maintenance Cost Analysis (29)",
+                            p: "should",
+                            d: "تحليل تكاليف الصيانة: استباقية مقابل رد الفعل",
+                        },
+                        {
+                            n: "AN-07",
+                            t: "Anomaly Detection",
+                            p: "should",
+                            d: "كشف الشذوذ: وقود مفقود، سرعات غريبة، أوقات توقف طويلة",
+                        },
+                        {
+                            n: "AN-08",
+                            t: "Daily/Weekly Scheduled Reports",
+                            p: "must",
+                            d: "تقارير تلقائية يومية/أسبوعية بصيغة PDF مرسلة للمديرين",
+                        },
+                        {
+                            n: "AN-09",
+                            t: "KPI Drill-Down Explorer",
+                            p: "nice",
+                            d: "لوحة تفاعلية للتعمق في المؤشرات: من الأسطول لكل سائق",
+                        },
                     ],
                     stack: [
                         "Laravel",
                         "SQL Server",
-                        "Read-Only Replica / Reporting DB",
+                        "SQL Server Read Replica",
                         "Laravel Scheduler",
-                        "Snappy / DomPDF",
+                        "Snappy (wkhtmltopdf)",
                     ],
                     reqs: [
                         {
-                            l: "Reporting DB",
-                            s: "قاعدة منفصلة للتقارير حتى لا تتأثر المعاملات",
+                            l: "Analytics Isolation",
+                            s: "القراءة من replica لمنع الضغط على OLTP",
                         },
                         {
-                            l: "Score Formula",
-                            s: "(speed x w1) + (fuel x w2) + (rating x w3)",
+                            l: "KPI Definitions",
+                            s: "weights/config قابلة للتعديل بدون تعديل كود",
                         },
                         {
-                            l: "Auto Reports",
-                            s: "تقارير يومية وأسبوعية عبر Scheduler",
+                            l: "Data Quality",
+                            s: "validation pipeline قبل حساب المؤشرات",
                         },
                         {
-                            l: "PDF Export",
-                            s: "تصدير التقارير PDF للمديرين",
+                            l: "Report Engine",
+                            s: "PDF/CSV exports مع scheduling",
                         },
                         {
-                            l: "KPI Rollups",
-                            s: "jobs دورية لحساب وتخزين المؤشرات",
+                            l: "Rollup Strategy",
+                            s: "daily/hourly rollups تقلل تكلفة الاستعلام",
                         },
                         {
-                            l: "Data Archiving",
-                            s: "نقل البيانات القديمة إلى archive tables",
+                            l: "Archive Windows",
+                            s: "نقل البيانات الأقدم لطبقة أرشيف محسوبة",
                         },
                     ],
                 },
@@ -3546,42 +3989,92 @@
                     icon: "📋",
                     name: "Logging & Audit Service",
                     fns: [
-                        { n: "42", t: "Database Integrity Manager" },
-                        { n: "*", t: "Audit Trail - كل action يتسجل" },
-                        { n: "*", t: "System Event Log" },
-                        { n: "*", t: "Error & Exception Tracking" },
+                        {
+                            n: "LG-01",
+                            t: "Structured Application Logs",
+                            p: "must",
+                            d: "سجلات منظمة بصيغة JSON مع request_id و user_id لتتبع العمليات",
+                        },
+                        {
+                            n: "LG-02",
+                            t: "Immutable Audit Trail (42)",
+                            p: "must",
+                            d: "مسار تدقيق غير قابل للتغيير: من غيّر، ماذا، متى، قبل/بعد",
+                        },
+                        {
+                            n: "LG-03",
+                            t: "Correlation ID Propagation",
+                            p: "must",
+                            d: "معرف ارتباط موحد ينتشر عبر جميع الطلبات بين الخدمات",
+                        },
+                        {
+                            n: "LG-04",
+                            t: "Error & Exception Tracking",
+                            p: "must",
+                            d: "تتبع الأخطاء والاستثناءات عبر Sentry مع full stack traces",
+                        },
+                        {
+                            n: "LG-05",
+                            t: "PII Masking / Redaction",
+                            p: "must",
+                            d: "إخفاء البيانات الحساسة (أرقام الهاتف، البريد) قبل التخزين",
+                        },
+                        {
+                            n: "LG-06",
+                            t: "Retention + Archive Jobs",
+                            p: "must",
+                            d: "حفظ 30 يوماً في التخزين السريع وأرشفة الأقدم لتوفير التكاليف",
+                        },
+                        {
+                            n: "LG-07",
+                            t: "Compliance Export",
+                            p: "should",
+                            d: "تصدير تقارير تدقيق للامتثال القانوني والمراجعة الخارجية",
+                        },
+                        {
+                            n: "LG-08",
+                            t: "System Event Replay Feed",
+                            p: "nice",
+                            d: "قائمة أحداث النظام المسلسلة لإعادة التشغيل أو الاستقصاء",
+                        },
+                        {
+                            n: "LG-09",
+                            t: "DB Integrity Checkpoints",
+                            p: "should",
+                            d: "نقاط فحص دورية لسلامة قاعدة البيانات والاتساق",
+                        },
                     ],
                     stack: [
                         "Laravel Monolog",
                         "SQL Server",
-                        "ELK / Grafana Loki",
+                        "ELK Stack",
                         "Sentry",
-                        "Scheduler",
+                        "Laravel Scheduler",
                     ],
                     reqs: [
                         {
-                            l: "Structured Logging",
-                            s: "JSON logs مع request_id و service name",
+                            l: "Structured JSON",
+                            s: "كل logs بصيغة JSON مع request_id و user_id",
                         },
                         {
-                            l: "Audit Table",
-                            s: "who, what, when, before, after داخل SQL Server",
+                            l: "Audit Model",
+                            s: "who/what/when/before/after + immutable writes",
                         },
                         {
-                            l: "Log Aggregation",
-                            s: "تجميع ومراقبة logs مركزياً",
+                            l: "PII Policy",
+                            s: "masking إجباري للبيانات الحساسة قبل التخزين",
                         },
                         {
-                            l: "Error Tracking",
-                            s: "Sentry مع full context و stack traces",
+                            l: "Alerting Rules",
+                            s: "تنبيهات فورية للأخطاء الحرجة والارتفاعات المفاجئة",
                         },
                         {
-                            l: "Retention",
-                            s: "الاحتفاظ 30 يوم ثم archive",
+                            l: "Retention Policy",
+                            s: "30 يوم hot + archive cold storage",
                         },
                         {
-                            l: "Archive Job",
-                            s: "Job دوري لنقل السجلات القديمة تلقائياً",
+                            l: "Compliance Output",
+                            s: "تصدير تدقيقي قابل للمراجعة القانونية",
                         },
                     ],
                 },
@@ -3602,6 +4095,15 @@
                 if (!container) return;
 
                 container.innerHTML = "";
+
+                const summary = document.getElementById("ms-summary");
+                if (summary) {
+                    const fnCount = BACKEND_DATA.reduce(
+                        (sum, service) => sum + service.fns.length,
+                        0,
+                    );
+                    summary.textContent = `${fnCount} function - 8 services (Must / Should / Nice)`;
+                }
 
                 BACKEND_DATA.forEach((service) => {
                     if (
@@ -3629,15 +4131,15 @@
       <div class="ms-fn-grid">${service.fns
           .map(
               (fn) =>
-                  `<div class="ms-fn-pill"><span class="ms-fn-num">${fn.n}</span><span class="ms-fn-name">${fn.t}</span></div>`,
+                  `<div class="ms-fn-pill ms-fn-clickable"><div><span class="ms-fn-num">${fn.n}</span><span class="ms-fn-name">${fn.t}</span><span class="ms-pri ${fn.p}">${fn.p}</span></div><div class="ms-fn-desc ms-fn-desc-hidden">${fn.d}</div></div>`,
           )
           .join("")}</div>
       <div class="ms-lbl">Tech Stack</div>
       <div class="ms-stack-row">${service.stack
           .map((tech) => `<span class="ms-stk">${tech}</span>`)
           .join("")}</div>
-      <div class="ms-lbl">Requirements</div>
-      <div class="ms-req-grid">${service.reqs
+      <div class="ms-lbl">Requirements <span class="ms-req-toggle">[عرض]</span></div>
+      <div class="ms-req-grid ms-req-hidden">${service.reqs
           .map(
               (req) =>
                   `<div class="ms-req"><div class="ms-req-dot"></div><div><div class="ms-req-label">${req.l}</div><div class="ms-req-sub">${req.s}</div></div></div>`,
@@ -3652,6 +4154,24 @@
             function toggleBackendService(el) {
                 el.parentElement.classList.toggle("open");
             }
+
+            function toggleFnDesc(event) {
+                const pill = event.target.closest(".ms-fn-pill");
+                if (!pill) return;
+
+                const desc = pill.querySelector(".ms-fn-desc");
+                if (desc) {
+                    desc.classList.toggle("ms-fn-desc-hidden");
+                }
+            }
+
+            document.addEventListener("click", (event) => {
+                if (event.target.closest(".ms-fn-pill")) {
+                    toggleFnDesc(event);
+                } else if (event.target.closest(".ms-req-toggle")) {
+                    toggleReqs(event);
+                }
+            });
 
             const backendFilterRow = document.querySelector(".ms-filter-row");
             if (backendFilterRow) {
